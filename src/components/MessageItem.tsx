@@ -4,6 +4,7 @@ import mdKatex from 'markdown-it-katex'
 import mdHighlight from 'markdown-it-highlightjs'
 import { useClipboard, useEventListener } from 'solidjs-use'
 import IconRefresh from './icons/Refresh'
+import IconContinue from './icons/Continue'
 import type { Accessor } from 'solid-js'
 import type { ChatMessage } from '@/types'
 
@@ -12,14 +13,16 @@ interface Props {
   message: Accessor<string> | string
   showRetry?: Accessor<boolean>
   onRetry?: () => void
+  onContinue?: () => void
 }
 
-export default ({ role, message, showRetry, onRetry }: Props) => {
+export default ({ role, message, showRetry, onRetry, onContinue }: Props) => {
   const roleClass = {
     system: 'bg-gradient-to-r from-gray-300 via-gray-200 to-gray-300',
     user: 'bg-gradient-to-r from-purple-400 to-yellow-400',
     assistant: 'bg-gradient-to-r from-yellow-200 via-green-200 to-green-300',
   }
+
   const [source] = createSignal('')
   const { copy, copied } = useClipboard({ source, copiedDuring: 1000 })
 
@@ -75,12 +78,24 @@ export default ({ role, message, showRetry, onRetry }: Props) => {
         <div class="message prose break-words overflow-hidden" innerHTML={htmlString()} />
       </div>
       {showRetry?.() && onRetry && (
-        <div class="fie px-3 mb-2">
-          <div onClick={onRetry} class="gpt-retry-btn">
-            <IconRefresh />
-            <span>Regenerate</span>
+          <div class="fie px-3 mb-2">
+            <div onClick={onRetry} class="gpt-retry-btn">
+              <IconRefresh />
+              <span>不满意重新回答</span>
+            </div>
+            <div>
+              &nbsp;
+              &nbsp;
+            </div>
+            <div>
+              <div onClick={onContinue} class="gpt-retry-btn" >
+                <IconContinue />
+                <span>还有吗？</span>
+              </div>
+            </div>
+
           </div>
-        </div>
+
       )}
     </div>
   )

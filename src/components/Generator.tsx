@@ -1,7 +1,6 @@
 import { Index, Show, createSignal, onCleanup, onMount } from 'solid-js'
 import { useThrottleFn } from 'solidjs-use'
 import { generateSignature } from '@/utils/auth'
-import IconClear from './icons/Clear'
 import MessageItem from './MessageItem'
 import SystemRoleSettings from './SystemRoleSettings'
 import ErrorMessageItem from './ErrorMessageItem'
@@ -60,7 +59,7 @@ export default () => {
 
   const smoothToBottom = useThrottleFn(() => {
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
-  }, 300, false, true)
+  }, 600, false, true)
 
   const requestWithLatestMessage = async() => {
     setLoading(true)
@@ -114,7 +113,6 @@ export default () => {
 
           if (char)
             setCurrentAssistantMessage(currentAssistantMessage() + char)
-
           smoothToBottom()
         }
         done = readerDone
@@ -169,6 +167,12 @@ export default () => {
     }
   }
 
+  const continueChat = () => {
+    if (messageList().length > 0) {
+      inputRef.value = '继续'
+      handleButtonClick()
+    }
+  }
   const handleKeydown = (e: KeyboardEvent) => {
     if (e.isComposing || e.shiftKey)
       return
@@ -195,6 +199,7 @@ export default () => {
             message={message().content}
             showRetry={() => (message().role === 'assistant' && index === messageList().length - 1)}
             onRetry={retryLastFetch}
+            onContinue={continueChat}
           />
         )}
       </Index>
@@ -209,8 +214,8 @@ export default () => {
         when={!loading()}
         fallback={() => (
           <div class="gen-cb-wrapper">
-            <span>AI is thinking...</span>
-            <div class="gen-cb-stop" onClick={stopStreamFetch}>Stop</div>
+            <span>内容整理中...</span>
+            <div class="gen-cb-stop" onClick={stopStreamFetch}>停止</div>
           </div>
         )}
       >
@@ -219,7 +224,7 @@ export default () => {
             ref={inputRef!}
             disabled={systemRoleEditing()}
             onKeyDown={handleKeydown}
-            placeholder="Enter something..."
+            placeholder="输入您想了解的内容"
             autocomplete="off"
             autofocus
             onInput={() => {
@@ -229,11 +234,11 @@ export default () => {
             rows="1"
             class="gen-textarea"
           />
-          <button onClick={handleButtonClick} disabled={systemRoleEditing()} gen-slate-btn>
-            Send
+          <button title="发送" onClick={handleButtonClick} disabled={systemRoleEditing()} gen-slate-btn>
+            发送
           </button>
-          <button title="Clear" onClick={clear} disabled={systemRoleEditing()} gen-slate-btn>
-            <IconClear />
+          <button title="清空对话内容" onClick={clear} disabled={systemRoleEditing()} gen-slate-btn>
+            清空
           </button>
         </div>
       </Show>

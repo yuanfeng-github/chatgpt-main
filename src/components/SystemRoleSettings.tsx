@@ -18,6 +18,10 @@ export default (props: Props) => {
     props.setCurrentSystemRoleSettings(systemInputRef.value)
     props.setSystemRoleEditing(false)
   }
+  const handleSelectChange = (value) => {
+    props.setCurrentSystemRoleSettings(value)
+    props.setSystemRoleEditing(false)
+  }
 
   return (
     <div class="my-4">
@@ -28,7 +32,7 @@ export default (props: Props) => {
               <Show when={props.canEdit()} fallback={<IconEnv />}>
                 <span onClick={() => props.setCurrentSystemRoleSettings('')} class="sys-edit-btn p-1 rd-50%" > <IconX /> </span>
               </Show>
-              <span>System Role: </span>
+              <span>助手角色:</span>
             </div>
             <div class="mt-1">
               {props.currentSystemRoleSettings()}
@@ -38,7 +42,7 @@ export default (props: Props) => {
         <Show when={!props.currentSystemRoleSettings() && props.canEdit()}>
           <span onClick={() => props.setSystemRoleEditing(!props.systemRoleEditing())} class="sys-edit-btn">
             <IconEnv />
-            <span>Add System Role</span>
+            <span>设置助手角色</span>
           </span>
         </Show>
       </Show>
@@ -46,18 +50,21 @@ export default (props: Props) => {
         <div>
           <div class="fi gap-1 op-50 dark:op-60">
             <IconEnv />
-            <span>System Role:</span>
+            <span>助手角色信息:</span>
           </div>
-          <p class="my-2 leading-normal text-sm op-50 dark:op-60">Gently instruct the assistant and set the behavior of the assistant.</p>
+          <p class="my-2 leading-normal text-sm op-50 dark:op-60">设置不同角色场景提示词让AI的回复更符合您的期望.</p>
           <div>
-            <textarea
+            <textarea style="font-size: 14px;"
               ref={systemInputRef!}
-              placeholder="You are a helpful assistant, answer as concisely as possible...."
+              placeholder="我想让你担任网页设计顾问。我将为您提供有关组织需要协助设计或重新开发他们的网站的细节，您的角色是建议最合适的界面和功能，可以提高用户体验，同时也满足公司的业务目标。你应该运用你的 UX/UI 设计原则、编码语言、网站开发工具等方面的知识，为项目制定一个全面的计划。"
               autocomplete="off"
               autofocus
-              rows="3"
+              rows="4"
               gen-textarea
             />
+          </div>
+          <div>
+
           </div>
           <button onClick={handleButtonClick} gen-slate-btn>
             Set
